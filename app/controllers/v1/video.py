@@ -257,7 +257,9 @@ def create_task(
             # 记录，否则 API 和 WebUI 会永久展示一个实际从未运行的任务。
             sm.state.delete_task(task_id)
             raise
-        logger.success(f"Task created: {utils.to_json(task)}")
+        logger.success(
+            f"Task created: task_id={task_id}, request_id={request_id}, stop_at={stop_at}"
+        )
         return utils.get_response(200, task)
     except TaskQueueFullError as e:
         logger.warning(
@@ -349,7 +351,7 @@ def delete_video(request: Request, task_id: str = Path(..., description="Task ID
                     raise
 
         sm.state.delete_task(task_id)
-        logger.success(f"video deleted: {utils.to_json(task)}")
+        logger.success(f"video deleted: task_id={task_id}, request_id={request_id}")
         return utils.get_response(200)
 
     raise HttpException(
